@@ -280,113 +280,7 @@
       
       //colisão tiro
       
-    for (let qw in inimigos){
-      let enemy_o = inimigos[qw];
-      if(Hero.width + Hero.x  > enemy_o.x && Hero.x < enemy_o.x +enemy_o.width && Hero.y + Hero.width > enemy_o.y && Hero.y < enemy_o.y + enemy_o.width){
-        life--;
-        Hero.y += 3.4;
-        Hero.x+=2.4;
-      }
-      if(vendedor.width + vendedor.x  > enemy_o.x && vendedor.x < enemy_o.x +enemy_o.width && vendedor.y + vendedor.width > enemy_o.y && vendedor.y < enemy_o.y + enemy_o.width){
-        life_vendedor--;
-        if(life_vendedor == 0){
-          gameOver = true;
-        }
-      }
-    }
-    let Tiro_as = '';
-    for(let a in disparos_enemys){
-          let Tiroenemy_o = disparos_enemys[a];
-          if (Hero.width + Hero.x  > Tiroenemy_o.x && Hero.x < Tiroenemy_o.x +Tiroenemy_o.width && Hero.y + Hero.width > Tiroenemy_o.y && Hero.y < Tiroenemy_o.y + Tiroenemy_o.width) {
-            removeObjects(Tiroenemy_o,disparos_enemys); 
-            if(Tiro_as != Tiroenemy_o )
-            life--;
-            
-          }
-          
-          Tiro_as = Tiroenemy_o;
-      }
-
-      if(life <= 0){
-        removeObjects(Hero,Objetos);
-        life = 0;
-        gameOver =true;
-      }
-      
-      //===============================================
-      
-      //////// armas 
-      //mesa 1 esta levando um bug que eu não sei resolver, se tira a  messa 1 o bug vai para a mesa 2
-      
-      
-      
-
-        //disparo speed
-        for(let x in disparos){
-          let missile = disparos[x];
-          
-          if (missile.direção == 1) {
-            missile.y += tiro_obj.speed;
-          }
-          if (missile.direção == 3) {
-            missile.x += missile.width;
-            missile.x += tiro_obj.speed;
-          }
-          if (missile.direção == 2) {
-            missile.y += missile.width;
-            missile.y += tiro_obj.speed;
-          }
-          if (missile.direção == 4) {
-            missile.x += tiro_obj.speed;
-          }
-          if(missile.x <0){
-            removeObjects(missile,disparos);
-          }
-          if(missile.x  +  missile.width  >  GamerWord.width){
-            removeObjects(missile,disparos);
-          }
-          if(missile.y < 0){
-            removeObjects(missile,disparos);
-          }
-          if(missile.y + missile.height  > GamerWord.height){
-            removeObjects(missile,disparos)
-          }
-          
-        }
-        //itemns 
-
-        //==============================
-
-        //disparo enemy
-        }
-      for(let p in disparos_enemys){
-        let enemy_tiro = disparos_enemys[p];
-        if (enemy_tiro.direção == 2) {
-            enemy_tiro.y += enemy_tiro.speed;
-          }
-          if (enemy_tiro.direção == 3) {
-            enemy_tiro.x += enemy_tiro.width;
-            enemy_tiro.x += enemy_tiro.speed;
-          }
-          if (enemy_tiro.direção == 1) {
-            enemy_tiro.y += enemy_tiro.width;
-            enemy_tiro.y += enemy_tiro.speed;
-          }
-          if (enemy_tiro.direção == 4) {
-            enemy_tiro.x += enemy_tiro.speed;
-          }
-          if(enemy_tiro.x < 0){
-            removeObjects(enemy_tiro,disparos_enemys);
-          }
-          if(enemy_tiro.x  +  enemy_tiro.width > GamerWord.width){
-            removeObjects(enemy_tiro,disparos_enemys);
-          }
-          if(enemy_tiro.y   < 0){
-            removeObjects(enemy_tiro,disparos_enemys);
-          }
-          if(enemy_tiro.y  +  enemy_tiro.height > GamerWord.height){
-            removeObjects(enemy_tiro,disparos_enemys);
-          }
+    
         
       }
       //=====================================
@@ -566,6 +460,115 @@
       }
     
       /////////
+      function update3(){
+        for (let qw in inimigos){
+      let enemy_o = inimigos[qw];
+      if(Hero.width + Hero.x  > enemy_o.x && Hero.x < enemy_o.x +enemy_o.width && Hero.y + Hero.width > enemy_o.y && Hero.y < enemy_o.y + enemy_o.width){
+        life--;
+        Hero.y += 3.4;
+        Hero.x+=2.4;
+      }
+      if(vendedor.width + vendedor.x  > enemy_o.x && vendedor.x < enemy_o.x +enemy_o.width && vendedor.y + vendedor.width > enemy_o.y && vendedor.y < enemy_o.y + enemy_o.width){
+        life_vendedor--;
+        if(life_vendedor == 0){
+          gameOver = true;
+        }
+      }
+    }
+    let Tiro_as = '';
+    for(let a in disparos_enemys){
+          let Tiroenemy_o = disparos_enemys[a];
+          if (Hero.width + Hero.x  > Tiroenemy_o.x && Hero.x < Tiroenemy_o.x +Tiroenemy_o.width && Hero.y + Hero.width > Tiroenemy_o.y && Hero.y < Tiroenemy_o.y + Tiroenemy_o.width) {
+            removeObjects(Tiroenemy_o,disparos_enemys); 
+            if(Tiro_as != Tiroenemy_o )
+            life--;
+            
+          }
+          
+          Tiro_as = Tiroenemy_o;
+      }
+
+      if(life <= 0){
+        removeObjects(Hero,Objetos);
+        life = 0;
+        gameOver =true;
+      }
+      
+      //===============================================
+      
+      //////// armas 
+      //mesa 1 esta levando um bug que eu não sei resolver, se tira a  messa 1 o bug vai para a mesa 2
+      
+      
+      
+
+        //disparo speed
+        for(let x in disparos){
+          let missile = disparos[x];
+          
+          if (missile.direção == 1) {
+            missile.y += tiro_obj.speed;
+          }
+          if (missile.direção == 3) {
+            missile.x += missile.width;
+            missile.x += tiro_obj.speed;
+          }
+          if (missile.direção == 2) {
+            missile.y += missile.width;
+            missile.y += tiro_obj.speed;
+          }
+          if (missile.direção == 4) {
+            missile.x += tiro_obj.speed;
+          }
+          if(missile.x <0){
+            removeObjects(missile,disparos);
+          }
+          if(missile.x  +  missile.width  >  GamerWord.width){
+            removeObjects(missile,disparos);
+          }
+          if(missile.y < 0){
+            removeObjects(missile,disparos);
+          }
+          if(missile.y + missile.height  > GamerWord.height){
+            removeObjects(missile,disparos)
+          }
+          
+        }
+        //itemns 
+
+        //==============================
+
+        //disparo enemy
+        }
+      for(let p in disparos_enemys){
+        let enemy_tiro = disparos_enemys[p];
+        if (enemy_tiro.direção == 2) {
+            enemy_tiro.y += enemy_tiro.speed;
+          }
+          if (enemy_tiro.direção == 3) {
+            enemy_tiro.x += enemy_tiro.width;
+            enemy_tiro.x += enemy_tiro.speed;
+          }
+          if (enemy_tiro.direção == 1) {
+            enemy_tiro.y += enemy_tiro.width;
+            enemy_tiro.y += enemy_tiro.speed;
+          }
+          if (enemy_tiro.direção == 4) {
+            enemy_tiro.x += enemy_tiro.speed;
+          }
+          if(enemy_tiro.x < 0){
+            removeObjects(enemy_tiro,disparos_enemys);
+          }
+          if(enemy_tiro.x  +  enemy_tiro.width > GamerWord.width){
+            removeObjects(enemy_tiro,disparos_enemys);
+          }
+          if(enemy_tiro.y   < 0){
+            removeObjects(enemy_tiro,disparos_enemys);
+          }
+          if(enemy_tiro.y  +  enemy_tiro.height > GamerWord.height){
+            removeObjects(enemy_tiro,disparos_enemys);
+          }
+      }
 
   
 
@@ -653,7 +656,9 @@
       if (Play) {
       update();
       update2();
+      update3();
       render();
+
       }if (Pause) {
         render();
       }
