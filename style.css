@@ -1,0 +1,51 @@
+*{
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+}
+html,body{
+		width: 100%;
+		height: 100vh;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		position: relative;
+		background: linear-gradient(90deg, rgba(255,138,2,1) 1%, rgba(2,0,36,1) 42%, rgba(0,176,212,1) 100%);
+		background-size:300% 300%;
+		animation: linea  12s infinite;
+
+}
+#menu{
+	    width: 100%;
+    max-width: 800px;
+    position: absolute;
+    right: 240px;
+    animation:rotate  6s  infinite; 
+    transition: all 2s;
+
+}
+@keyframes  rotate  {
+	0%{
+		transform: rotateZ(0deg);
+	}
+	50%{
+		transform: rotateZ(-2deg);
+	}
+	70%{
+		transform: rotateZ(2deg);
+	}
+	100%{
+		transform: rotateZ(0deg);
+	}
+}
+@keyframes linea{
+  0%{
+    background-position: 0% 50% ;
+  }
+  50%{
+    background-position:100% 50% ;
+  }
+  100%{
+    background-position: 0% 50%;
+  }
+}
