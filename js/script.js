@@ -1,17 +1,20 @@
   let up = 87, down = 83,left = 65 ,emv = 69, right = 68,tiro_tec = 74,crea = 1,ini =1,shift = 16;
-    let  gameOver = false,money=10,onda_dead=0, dire = 1,Tenor_id = 0, Tenor_posi = 9,Pause  = Play = false,s=0,E = false,life = 10,life_vendedor = 15;
+    let  gameOver = false,money=10,onda_dead = 0, dire = 1,dead = false,Tenor_id = 0, Tenor_posi = 9,Pause  = Play = false,s=0,E = false,life = 10,life_vendedor = 15;
     let moveEsquerda = moveDireita = moveCima = moveBaixo = moveShift = atirar = false;
-    let id = 0,Muniçao = 0,posi = 5,tipo_arma ='bat',time_espa  = 0,onda = 100,andando = true,arma=false,soco =false;
+    let id = 0,Muniçao = 0,posi = 5,tipo_arma ='soco',arma_anterior,armatime_espa  = 0,onda = 10,andando = true,arma=false,soco =false;
     let canvas = document.querySelector("canvas");
     let ctx = canvas.getContext("2d");
     canvas.width = 800;
     canvas.height = 600;
+    let music_audio = document.querySelector('#music');
+    let music_effect = document.querySelector('#effect');
      setTimeout(function(){ 
       let  Menu_img  = document.querySelector('#menu');
       Menu_img.remove();
       Play = true;
+      music_audio.src  = Musicas[2];
           
-    }, 3000);
+    }, 7000);
     //objetos
     let Objetos = [];
     let disparos = [];
@@ -20,6 +23,9 @@
     let bloco_map =[];
     let  Objetos_armas=  [];
     let Espadas = [];
+    let Barra = [];
+    let Musicas = ['assets/music/gravity.mp3','assets/music/morty.mp3','assets/music/nigth.mp3','assets/music/Bat.mp3','assets/music/starWars.mp3']
+    let  ondas = [100,150,200,7,250,300,350,400];
     //Mapa
     //imgs =================================================
     let heroyi = new Image();
@@ -76,25 +82,49 @@
   let carroça_img =  new Image();
   carroça_img.src =  'assets/carroça.png';
 
+  let heart = new Image();
+  heart.src = 'assets/life.png';
+
+  let ball = new Image();
+  ball.src = 'assets/Ball.png';
+
+  let Radio_img = new Image();
+  Radio_img.src = 'assets/Radio/sprite_0.png';
+
+  let money_img = new Image();
+  money_img.src  = 'assets/money.png';
+
+  let explozão = new Image();
+  explozão.src = 'assets/explosin/92cdd23e6ff947e1aa887eff754d106b4LdEdEZVbIxIdkU5-0.png'
+
+  let cabe = new Image;
+  cabe.src = 'assets/Zombie/cabe1.png';
     // let caixaZ = new Image();
     // caixaZ.src = 'assets/CaixaZ.png';
 
     let Tenor = new Image;
-  
+
+  let  cabeça = new Sprites(110,280,32,32,cabe)
+
    let  carroça = new Sprites(464,1838,100,100,carroça_img) ;
-    let Hero = new Sprites(306,1274,72,74,heroyi,2.5);
 
-    let Mesa1 = new Sprites(310,1734,65,60,mesa_img,2);
-    let Mesa2 = new Sprites(460,1732,65,60,mesa_img,2);
-    let Mesa3 = new Sprites(598,1734,65,60,mesa_img,2);
+   let  life_logos = new Sprites(0,12,32,64,heart);
 
-    let gravity = new Sprites(10,10,24,25,gravity_img,2,50,'gravity','arma',1);
+  let  Balls = new Sprites(5,92,28,46,ball) ;
 
-    let rick = new Sprites(10,10,35,35,rick_img,2,65,'rick','arma',2);
+    let Hero = new Sprites(306,1274,72,74,heroyi,3.5);
 
-    let star = new Sprites(10,1274,32,32,bat_img,2,40,'star','arma',3);
+    let Radio = new Sprites(20,535,64,64,Radio_img,2);
+    
+    let money_barra = new Sprites(12,30,64,64,money_img,2);
 
-    let bat = new Sprites(10,1274,46,46,star_img,2,35,'bat','arma',4);
+    let gravity = new Sprites(10,10,24,25,gravity_img,2,65,'gravity','arma',1,0);
+
+    let rick = new Sprites(10,10,35,35,rick_img,2,65,'rick','arma',2,1);
+
+    let star = new Sprites(10,1274,32,32,bat_img,2,65,'star','arma',3,4);
+
+    let bat = new Sprites(10,1274,46,46,star_img,2,65,'bat','arma',4,3);
 
     let lifes = new Sprites(10,1274,32,32,lifes_img,2,2,'cura',5,'cura',3);
 
@@ -124,7 +154,11 @@
     Objetos.push(vendedor);
     Objetos.push(Hero);
     Objetos.push(carroça);
-
+    Barra.push(Balls);
+    Barra.push(life_logos);
+    // Barra.push(money_barra);
+    Barra.push(Radio);
+    Barra.push(cabeça);
     let cam = {
       x:Hero.x,
       y:Hero.y,
@@ -202,8 +236,17 @@
         E = false;
       }
     };
-
+    la=1
     function update(){
+      //colisao
+      block(Hero,vendedor);
+      block(Hero,Cachorro);
+      if(onda_dead >= onda ){
+        onda = ondas[la];
+        onda_dead = 0;    
+        la++;
+      }
+      //disparos vs Enemy
       for (let xo in inimigos) {
         for(let ox in disparos){        
           let enemy_o = inimigos[xo];
@@ -218,6 +261,11 @@
           }
           
        }
+    }
+    if(dead != true){
+        if (Muniçao <= 0) {
+      Muniçao = 0;
+      tipo_arma ='soco';
     }
 
       andando  = false;
@@ -258,6 +306,8 @@
           soco = true;
         
       }
+    }
+    
 
       //camera 
         if (Hero.x < cam.leftEdg()) {
@@ -278,7 +328,10 @@
       //===============
 
       
-      //colisão tiro
+      if (life == 0) {
+        dead = true;
+      }
+
       
     
         
@@ -289,6 +342,9 @@
         
       //direção enemy
           //============================
+
+
+
   //remove os objs
   function removeObjects(obj,arra){
     let i = arra.indexOf(obj);
@@ -301,56 +357,69 @@
 
   function firemeTiro(){
     Muniçao--;
-    if(Muniçao >0){
-        if(tipo_arma =="star"){
+    if(Muniçao > 0){
+      if(tipo_arma =='soco'){
+      let soco = {
+        img:Espada_colisao_img,
+        x:Hero.x +5,
+        y:Hero.y -50,
+        width:64,
+        height:64,
+        direção: dire,
+        speed:-1,
+      };
+       ini++;
+      Espadas.push(soco);
+      // 
+      }
+      if(tipo_arma =="star"){
       let Espada_colisao = {
-      img:Espada_colisao_img,
-      x:Hero.x +5,
-      y:Hero.y -50,
-      width:64,
-      height:64,
-      direção: dire,
-      speed:-1,
+        img:Espada_colisao_img,
+        x:Hero.x +5,
+        y:Hero.y -50,
+        width:64,
+        height:64,
+        direção: dire,
+        speed:-1,
+      };
+       ini++;
+      Espadas.push( Espada_colisao);
+      // 
+      }else if(tipo_arma == "bat"){
+        let bat_ball = {
+          img:bat_img,
+          x:Hero.x +5,
+          y:Hero.y + 5,
+          width:32,
+          height:32,
+          direção: dire,
+          speed:-0.7,
+        };
+        disparos.push(bat_ball);
+        ini++;
+      }else if(tipo_arma == "gravity"){
+       let gravity_ball = {
+        img:grav_ball,
+        x:Hero.x +5,
+        y:Hero.y + 5,
+        width:50,
+        height:50,
+        direção: dire,
+        speed:-0.7,
 
-    };
-    ini++;
-    Espadas.push( Espada_colisao);
-    // 
-    }else if(tipo_arma == "bat"){
-      let bat_ball = {
-        img:bat_img,
+      };
+      disparos.push(gravity_ball);
+      ini++;
+      }
+     if(tipo_arma == 'rick' ){
+      let rick_balls = {
+        img:rick_ball,
         x:Hero.x +5,
         y:Hero.y + 5,
         width:32,
         height:32,
         direção: dire,
-        speed:-1,
-      };
-      disparos.push(bat_ball);
-      ini++;
-    }else if(tipo_arma == "gravity"){
-       let gravity_ball = {
-      img:grav_ball,
-      x:Hero.x +5,
-      y:Hero.y + 5,
-      width:50,
-      height:50,
-      direção: dire,
-      speed:-1,
-
-    };
-    disparos.push(gravity_ball);
-    ini++;
-    }
-     if(tipo_arma == 'rick' ){
-      let rick_balls = {
-      img:rick_ball,
-      x:Hero.x +5,
-      y:Hero.y + 5,
-      width:32,
-      height:32,
-      direção: dire,
-      speed:-1,
+        speed:-0.7,
 
     };
     disparos.push(rick_balls);
@@ -359,9 +428,7 @@
 
     atirar=false;
     }
-    if (Muniçao <= 0) {
-      Muniçao = 0;
-    }
+
     
     }
   
@@ -386,10 +453,28 @@
     Hero.y = Math.max(0,Math.min(GamerWord.height - Hero.height, Hero.y));
 
     //direção  enemy
-    for(let f in inimigos){
+    if(life >  0){
+      for(let f in inimigos){
         let enemy_alf = inimigos[f];
         
         if(enemy_alf.y < Hero.y -2){
+          enemy_alf.y += enemy_alf.speed * 1.4;
+        }else if(enemy_alf.y > Hero.y+2){
+         enemy_alf.y -= enemy_alf.speed * 1.4;
+        }else{
+        if(enemy_alf.x < Hero.x){
+         enemy_alf.x += enemy_alf.speed * 1.4;
+        }
+        if(enemy_alf.x > Hero.x){
+         enemy_alf.x -= enemy_alf .speed * 1.4;
+        }
+        } 
+      }
+    }else if (life ==0 ) {
+    for(let f in inimigos){
+        let enemy_alf = inimigos[f];
+        
+        if(enemy_alf.y < vendedor.y -2){
           enemy_alf.y += enemy_alf.speed * 0.8;
           if (ini > 0) {
             FireEnemy(enemy_alf.x,enemy_alf.y,1);
@@ -416,6 +501,7 @@
         }
       }
     }
+  }
     //////////////
 
     if(Hero.x + Hero.width > vendedor.x && Hero.x < vendedor.x + vendedor.width && Hero.y + Hero.height > vendedor.y&& Hero.y < vendedor.y +  vendedor.height){
@@ -437,44 +523,53 @@
                 if (numero.tipo_ferramenta == "arma") {
                   tipo_arma = numero.tipo;
                   Muniçao =  numero.quant_balas;
+                  music_audio.src =  Musicas[numero.music];
                   
                 }
                 if(numero.tipo_ferramenta == 'espada'){
                   tipo_arma = numero.tipo;
                   Muniçao = numero.quant_balas;
+                  music_audio.src =  Musicas[numero.music];
                 }
               }    
             }
-            setTimeout(function(){ 
-            removeObjects(numero,Objetos_armas);
-           
-          
-              }, 120);
+            
+            
           }
            
           
-          
-          
+            ///musica
+           
           
         }
       }
     
       /////////
       function update3(){
-        for (let qw in inimigos){
-      let enemy_o = inimigos[qw];
-      if(Hero.width + Hero.x  > enemy_o.x && Hero.x < enemy_o.x +enemy_o.width && Hero.y + Hero.width > enemy_o.y && Hero.y < enemy_o.y + enemy_o.width){
-        life--;
-        Hero.y += 3.4;
-        Hero.x+=2.4;
-      }
-      if(vendedor.width + vendedor.x  > enemy_o.x && vendedor.x < enemy_o.x +enemy_o.width && vendedor.y + vendedor.width > enemy_o.y && vendedor.y < enemy_o.y + enemy_o.width){
-        life_vendedor--;
-        if(life_vendedor == 0){
-          gameOver = true;
+       for (let qw in inimigos){
+        let enemy_o = inimigos[qw];
+        if(dead != true){
+          
+          if(Hero.width + Hero.x  > enemy_o.x && Hero.x < enemy_o.x +enemy_o.width && Hero.y + Hero.width > enemy_o.y && Hero.y < enemy_o.y + enemy_o.width){
+            life--;
+            Hero.y += 1.3;
+            Hero.x+=1.4;
+          }
+          if(vendedor.width + vendedor.x  > enemy_o.x && vendedor.x < enemy_o.x +enemy_o.width && vendedor.y + vendedor.width > enemy_o.y && vendedor.y < enemy_o.y + enemy_o.width){
+            life_vendedor--;
+            if(life_vendedor == 0){
+              gameOver = true;
+            }
+          }
+        
+        }else{
+          if(Hero.width + Hero.x  > enemy_o.x && Hero.x < enemy_o.x +enemy_o.width && Hero.y + Hero.width > enemy_o.y && Hero.y < enemy_o.y + enemy_o.width){
+            
+            removeObjects(enemy_o,inimigos);
+          }
         }
       }
-    }
+        
     let Tiro_as = '';
     for(let a in disparos_enemys){
           let Tiroenemy_o = disparos_enemys[a];
@@ -489,15 +584,15 @@
       }
 
       if(life <= 0){
-        removeObjects(Hero,Objetos);
+        dead = true
         life = 0;
-        gameOver =true;
+        
       }
       
       //===============================================
       
       //////// armas 
-      //mesa 1 esta levando um bug que eu não sei resolver, se tira a  messa 1 o bug vai para a mesa 2
+      
       
       
       
@@ -536,7 +631,7 @@
         }
         //itemns 
 
-        //==============================
+        //==============================  
 
         //disparo enemy
         }
@@ -579,8 +674,8 @@
       ctx.save();
       ctx.translate(-cam.x,-cam.y);
       ctx.clearRect(0,0,canvas.width,canvas.height);
+
       //animação
-      animation();
     /////////
       for (let i in Objetos) {
         let spr = Objetos[i];
@@ -615,28 +710,33 @@
       }
       
       ctx.restore();
+      for(let re in Barra){
+        let spr = Barra[re];
+        ctx.drawImage(spr.img,0,0,spr.width,spr.height,spr.x,spr.y,spr.width,spr.height);
+      }
       ctx.fillStyle = "white";
-       ctx.font = "bold 20px C";
-      ctx.fillText('Vida:'+life, 0,20);
+       ctx.font = "bold 30px C";
+      ctx.fillText(money, 85,70);
 
       ctx.fillStyle = "Black";
-      ctx.font = "20px Comic Sans MS";
-      ctx.fillText('Munição:'+Muniçao, 0  , 35);
+      ctx.font = "25px Comic Sans MS";
+      ctx.fillText(Muniçao,37,125);
 
       
       ctx.fillStyle = "Black";
        ctx.font = "20px Comic Sans MS";
-      ctx.fillText('Vida do Baianinho:'+life_vendedor, 80,20);
+      ctx.fillText('Vida do Baianinho:'+life_vendedor, 90,20);
      
      
       ctx.fillStyle = "white";
        ctx.font = "20px Comic Sans MS";
-      ctx.fillText(onda_dead+'/'+onda, 100,300);
+      ctx.fillText(onda_dead+'/'+onda, 140,300);
 
-      ctx.fillStyle = "blue";
-       ctx.font = "bold 20px Comic Sans MS";
-      ctx.fillText('money'+':'+money, 300,30);
+      ctx.fillStyle = "white";
+       ctx.font = "25px Comic Sans MS";
+      ctx.fillText(life, 40,36);
     };
+    let pos_explo = 0,explosao_quant = 0,posi_Global2= 0;
 
     function animation(){
       Tenor.src =`assets/Tenors/0c7863b5d7da4873c8cf2226111cec23Qh9tZE2ayiiL5m0O-`+Tenor_id+`.png`;
@@ -649,12 +749,30 @@
       if(arma){
         heroyi.src = 'assets/Hero/Hero_move'+'/sprite_'+posi;
       }
-    }
+      if(dead){
+        heroyi.src =  'assets/explosin/92cdd23e6ff947e1aa887eff754d106b4LdEdEZVbIxIdkU5-'+posi+'.png';
+        
+        
+        if(life == 10){
+          dead = false;
+          life -= explosao_quant;
+          explosao_quant++;
+        }
+      }
+
+        if(posi_Global2 <=4){
+          Radio_img.src ='assets/Radio/sprite_'+posi_Global2+'.png';
+        }
+        
+        
+      }
+    
 
     function loop(){
       
       if (Play) {
       update();
+      animation();
       update2();
       update3();
       render();
@@ -681,6 +799,17 @@
       if(posi <= 5){
         posi++;
       }
+      
+      if(dead){
+        pos_explo++;
+        life++
+        
+      }
+      if (pos_explo >= 12) {
+        Hero.y += 5;
+        Hero.x+=5;
+        pos_explo = 0;
+      }
 
       }, 90);
       
@@ -704,11 +833,19 @@
     }, 100);
     let ss = 0;
      setInterval(function(){ 
-      let zombie = new Sprites(300,100,96,100,enemy_img,1);
-      let zombiez = new Sprites(300,100,96,100,enemy_img,1);
+      let zombie = new Sprites(300,100,96,100,enemy_img,1.3);
+      let zombiez = new Sprites(300,100,96,100,enemy_img,1.3);
+      
+      if(tipo_arma == 'star'){
+          enemy_img.src =  'assets/Zombie/3.png'
+        }else{
+          enemy_img.src =  'assets/Zombie/1.png'
+        }
+
       if( s  <= onda / 2){
         zombie.x = 300;
         zombie.y = 100;
+        
         inimigos.push(zombie);
           s++;
       }
@@ -716,8 +853,15 @@
         zombiez.x = 948;
         zombiez.y = 86;
         ss++;
+      
         inimigos.push(zombiez);
       }
+
+      posi_Global2++;
+      if (posi_Global2 >=6) {
+        posi_Global2  =  0;
+      }
+     
     }, 500);
     main();
     loop();

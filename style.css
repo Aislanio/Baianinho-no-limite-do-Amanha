@@ -10,9 +10,11 @@ html,body{
 		align-items: center;
 		justify-content: center;
 		position: relative;
+		flex-direction: column;
 		background: linear-gradient(90deg, rgba(255,138,2,1) 1%, rgba(2,0,36,1) 42%, rgba(0,176,212,1) 100%);
 		background-size:300% 300%;
 		animation: linea  12s infinite;
+
 
 }
 #menu{
@@ -23,6 +25,9 @@ html,body{
     animation:rotate  6s  infinite; 
     transition: all 2s;
 
+}
+h3{
+	background: white;
 }
 @keyframes  rotate  {
 	0%{
